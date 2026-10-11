@@ -119,3 +119,12 @@ h1, h2, h3, h4 {
   height: 100%;
   border: 0;
 }
+
+/* Shorter banner: width unchanged, height reduced from the theme's 55vh default */
+.banner {
+  height: 32vh !important;
+  min-height: 200px !important;
+}
+.banner + .main-content {
+  margin-top: -60px !important;
+}
