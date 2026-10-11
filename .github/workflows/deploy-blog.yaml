@@ -27,28 +27,27 @@ jobs:
       HUGO_VERSION: 0.158.0
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
         with:
           submodules: recursive
           fetch-depth: 0
 
-      - name: Install Hugo
-        run: |
-          wget -O ${{ runner.temp }}/hugo.deb https://github.com{{ env.HUGO_VERSION }}/hugo_extended_${{ env.HUGO_VERSION }}_linux-amd64.deb
-          sudo dpkg -i ${{ runner.temp }}/hugo.deb
-          #curl -sLJO "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.tar.gz"
-          #mkdir "${HOME}/.local/hugo"
-          #tar -C "${HOME}/.local/hugo" -xf "hugo_extended_${HUGO_VERSION}_linux-amd64.tar.gz"
-          #rm "hugo_extended_${HUGO_VERSION}_linux-amd64.tar.gz"
-          #echo "${HOME}/.local/hugo" >> "${GITHUB_PATH}"
+      # FIX: Uses the official setup action to force the 0.158.0 extended version
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: ${{ env.HUGO_VERSION }}
+          extended: true
 
+      # This configures internal paths specifically for GitHub Pages
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
 
+      # This will now use the correct version safely
       - name: Build the site
         run: |
-          hugo build --gc --minify --baseURL "${{ steps.pages.outputs.base_url }}/"
+          hugo --gc --minify --baseURL "${{ steps.pages.outputs.base_url }}/"
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
