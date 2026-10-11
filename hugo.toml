@@ -46,3 +46,8 @@ tag = "tags"
     noClasses = false
     lineNos = false
     lineNumbersInTable = true
+
+[privacy]
+  [privacy.vimeo]
+    disableCookies = true
+    enableDNT = true

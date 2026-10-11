@@ -102,3 +102,20 @@ h1, h2, h3, h4 {
   font-weight: 600;
   letter-spacing: -0.01em;
 }
+
+.video-embed {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 */
+  height: 0;
+  overflow: hidden;
+  margin: 2rem 0;
+  border: 1px solid var(--border);
+}
+.video-embed iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
