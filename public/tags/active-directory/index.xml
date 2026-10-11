@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>Active-Directory on Netrunner Diaries</title>
+		<link>http://localhost:1313/tags/active-directory/</link>
+		<description>Recent content in Active-Directory on Netrunner Diaries</description>
+		<generator>Hugo</generator>
+		<language>en-us</language>
+		
+		
+		
+		
+			<lastBuildDate>Mon, 21 Sep 2026 00:00:00 +0000</lastBuildDate>
+		
+			<atom:link href="http://localhost:1313/tags/active-directory/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>Ghost in the Tower: Cracking Arasaka Corp</title>
+				<link>http://localhost:1313/missions/ghost-in-the-tower/</link>
+				<pubDate>Mon, 21 Sep 2026 00:00:00 +0000</pubDate>
+				<guid>http://localhost:1313/missions/ghost-in-the-tower/</guid>
+				<description>&lt;p&gt;&lt;em&gt;Job type: assumed breach. Target: Arasaka Corporation, internal directory infrastructure. No recon from zero, client handed over a foothold and a question: how far does this go.&lt;/em&gt;&lt;/p&gt;&#xA;&lt;p&gt;No handle on this one. Standard practice. In, take what&amp;rsquo;s needed, out clean. Netrunner&amp;rsquo;s enough.&lt;/p&gt;&#xA;&lt;p&gt;Brief was short. Arasaka&amp;rsquo;s perimeter looked solid on paper. Nobody had checked whether a low-privilege &amp;ldquo;trusted&amp;rdquo; account could walk somewhere it shouldn&amp;rsquo;t. That&amp;rsquo;s the job: start inside with minimal access, see how far the trust extends.&lt;/p&gt;</description>
+			</item>
+	</channel>
+</rss>

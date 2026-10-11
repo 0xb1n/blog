@@ -1,0 +1,104 @@
+/* OSI aesthetic override for hugo-theme-spectra
+   Place at: static/css/osi.css
+   Rules: monochrome, zero radius, no gradients, no glass, Inter + JetBrains Mono */
+
+/* ---- Shared tokens (both modes) ---- */
+:root,
+[data-theme="dark"] {
+  --font-display: 'Inter', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --radius: 0;
+  --radius-sm: 0;
+  --radius-xs: 0;
+
+  /* accent == accent-warm collapses every theme gradient to a flat fill */
+  --accent-soft: #808080;
+  --accent-glow: transparent;
+  --accent-warm-glow: transparent;
+  --card-shadow: none;
+  --sidebar-shadow: none;
+  --banner-overlay: none;
+  --banner-bg-accent-1: transparent;
+  --banner-bg-accent-2: transparent;
+}
+
+/* ---- Dark (primary) ---- */
+[data-theme="dark"] {
+  --bg-primary: #000000;
+  --bg-surface: #0a0a0a;
+  --bg-sidebar: #050505;
+  --bg-code: #0a0a0a;
+  --bg-code-header: #111111;
+  --text-primary: #e6e6e6;
+  --text-secondary: #a3a3a3;
+  --code-text: #e6e6e6;
+  --accent: #e6e6e6;
+  --accent-warm: #e6e6e6;
+  --border: rgba(255, 255, 255, 0.14);
+  --border-warm: rgba(255, 255, 255, 0.14);
+  --grid-color: rgba(255, 255, 255, 0.03);
+  --corner-bracket: rgba(255, 255, 255, 0.35);
+  --selection-bg: rgba(255, 255, 255, 0.2);
+  --banner-bg-1: #000000;
+  --banner-bg-2: #000000;
+  --banner-text: #ffffff;
+  --banner-subtitle: rgba(255, 255, 255, 0.55);
+  --banner-gradient-from: #ffffff;
+  --banner-gradient-to: #ffffff;
+  --code-copy-border: rgba(255, 255, 255, 0.14);
+}
+
+/* ---- Light ---- */
+:root:not([data-theme="dark"]) {
+  --bg-primary: #ffffff;
+  --bg-surface: #f5f5f5;
+  --bg-sidebar: #fafafa;
+  --bg-code: #f5f5f5;
+  --bg-code-header: #ebebeb;
+  --text-primary: #0a0a0a;
+  --text-secondary: #404040;
+  --code-text: #0a0a0a;
+  --accent: #0a0a0a;
+  --accent-warm: #0a0a0a;
+  --border: rgba(0, 0, 0, 0.18);
+  --border-warm: rgba(0, 0, 0, 0.18);
+  --grid-color: rgba(0, 0, 0, 0.04);
+  --corner-bracket: rgba(0, 0, 0, 0.4);
+  --selection-bg: rgba(0, 0, 0, 0.15);
+  --banner-bg-1: #ffffff;
+  --banner-bg-2: #ffffff;
+  --banner-text: #0a0a0a;
+  --banner-subtitle: rgba(0, 0, 0, 0.55);
+  --banner-gradient-from: #0a0a0a;
+  --banner-gradient-to: #0a0a0a;
+  --code-copy-border: rgba(0, 0, 0, 0.18);
+}
+
+/* ---- Hard overrides for hardcoded values in the theme SCSS ---- */
+*, *::before, *::after {
+  border-radius: 0 !important;
+  text-shadow: none !important;
+}
+.search-overlay, [class*="search"] {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Hover: flat accents mean the pink hover is gone, so invert instead */
+a:hover { color: var(--text-secondary); }
+
+/* Tactical labels */
+.sidebar nav a,
+.tag, [class*="tag"] a,
+time, .post-meta, .section-label, [class*="section-label"] {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}

@@ -1,0 +1,48 @@
+baseURL = "https://example.org"
+languageCode = "en-us"
+title = "Netrunner Diaries"
+theme = "hugo-theme-spectra"
+
+[taxonomies]
+tag = "tags"
+
+# Define the menus globally so Hugo cannot parse the tables out of order
+[[menus.main]]
+  name = "Home"
+  pageRef = "/"
+  weight = 1
+
+[[menus.main]]
+  name = "Missions"
+  pageRef = "/missions"
+  weight = 2
+
+[[menus.main]]
+  name = "Research"
+  pageRef = "/research"
+  weight = 3
+
+[[menus.main]]
+  name = "TTPs"
+  pageRef = "/ttps"
+  weight = 4
+
+[params]
+  author = 'Net Runner:'
+  tagline = '0xb1n4ry'
+  avatar = '/images/avatar.webp'
+  banner = '/images/banner.webp'
+  enableSearch = false
+  enableMouseGlow = false
+  customCSS = ['css/osi.css']
+  googleFontsURL = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap'
+
+[params.sidebar]
+  showRecent = false
+
+[markup]
+  [markup.highlight]
+    guessSyntax = true
+    noClasses = false
+    lineNos = false
+    lineNumbersInTable = true

@@ -1,0 +1,1 @@
+(function(){var e=document.getElementById("bannerImg");e&&e.addEventListener("error",function(){var t=e.parentElement;t&&t.remove()})})()

@@ -1,0 +1,1 @@
+(function(){document.querySelectorAll(".post-card-cover img").forEach(function(e){e.complete?e.classList.add("loaded"):(e.addEventListener("load",function(){e.classList.add("loaded")},{once:!0}),e.addEventListener("error",function(){e.classList.add("loaded")},{once:!0}))})})()
