@@ -1,17 +1,18 @@
 ---
-title: "Ghost in the Tower: Cracking Arasaka Corp"
+title: "Mission: Arasaka"
 date: 2026-09-21
 draft: false
 tags: ["active-directory", "bloodhound", "kerberoasting", "acl-abuse", "ad-cs", "privilege-escalation"]
 math: false
 cover: ""
 toc: true
-description: "Assumed-breach engagement against a hardened Arasaka AD environment: enumeration, Kerberoasting, an ACL abuse chain, and an AD CS escalation to Domain Admin."
+description: "Another day in night city."
 ---
 
-*Job type: assumed breach. Target: Arasaka Corporation, internal directory infrastructure. No recon from zero, client handed over a foothold and a question: how far does this go.*
+*Job type: Bounty 
+Target: Arasaka Corporation*
 
-No handle on this one. Standard practice. In, take what's needed, out clean. Netrunner's enough.
+A corpo spy reached out to my a broker across the wire, they had got their hands on a low priv account for the Arasaka Corperation. 
 
 Brief was short. Arasaka's perimeter looked solid on paper. Nobody had checked whether a low-privilege "trusted" account could walk somewhere it shouldn't. That's the job: start inside with minimal access, see how far the trust extends.
 
