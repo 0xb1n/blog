@@ -9,8 +9,9 @@ toc: true
 description: "Another day in night city."
 ---
 
-*Job type: Bounty* 
-*Target: Arasaka Corporation*
+Job type: Bounty
+ 
+Target: Arasaka Corporation
 
 Brief was short, a corpo spy reached out to my a broker across the wire, they had got their hands on a low priv account for the Arasaka Corperation.
 The objective, compromise the network infrastructure and ensure that they could come in through the gates undetected later.  Promise of more work down the road, more challenging.. well paying work. 
@@ -18,7 +19,7 @@ First though, I was to prove I am capable. What a joke, I will show them how cap
 
 ---
 
-## Phase 0 — The Intel Package
+## Phase 0 - The Intel Package
 
 No initial exploitation. Client handed over a live domain account on day one along with access to a corperate VPN. This is the only initial access that was given, it was all that was needed.
 I'm a professional after all.
@@ -32,7 +33,7 @@ Creds: faraday:hacksmarter123
 
 ---
 
-## Phase 1 — Casing the Infrastructure. 
+## Phase 1 - Casing the Infrastructure. 
 
 Full port sweep first, know the target before touching anything else. Don't want any nasty surprises. 
 
@@ -83,7 +84,7 @@ sudo nano /etc/hosts
 
 ---
 
-## Phase 2 — Trust, but Verify.
+## Phase 2 - Trust, but Verify.
 Sometimes clients make typos, or a bit gets misplaced here and there in transmission, before anything we need to verify the account that was given to us:
 
 
