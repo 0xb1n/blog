@@ -33,7 +33,7 @@ Creds: faraday:hacksmarter123
 
 ---
 
-## Phase 1 - Casing the Infrastructure. 
+## Phase 1 - Casing the Infrastructure
 
 Full port sweep first, know the target before touching anything else. Don't want any nasty surprises. 
 
@@ -84,7 +84,7 @@ sudo nano /etc/hosts
 
 ---
 
-## Phase 2 - Trust, but Verify.
+## Phase 2 - Trust, but Verify
 Sometimes clients make typos, or a bit gets misplaced here and there in transmission, before anything we need to verify the account that was given to us:
 
 
