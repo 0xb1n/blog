@@ -29,7 +29,7 @@ Target IP: 10.0.17.23
 Creds: faraday:hacksmarter123
 ```
 
-`faraday`. This is are starting access, from here, I will case their enviroment and see what I am working with. 
+`faraday`. This is our starting access, from here, I will case their enviroment and see what I am working with. 
 
 ---
 
