@@ -40,6 +40,10 @@ tag = "tags"
   enableMouseGlow = false
   customCSS = ['css/osi.css']
   googleFontsURL = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap'
+  bannerTitle = "Welcome to"
+  bannerHighlight = "Netrunner Diaries"
+  bannerSubtitle = "// Research, Execute, Dominate"
+  showTags = false
 
 [params.sidebar]
   showRecent = false
