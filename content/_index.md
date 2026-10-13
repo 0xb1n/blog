@@ -2,15 +2,8 @@
 title: "Netrunner Diaries"
 ---
 
-Welcome. This is where I document offensive security work: assumed-breach
-engagements, AD attack chains, AD CS abuse, and whatever else comes out of
-the lab.
+My name is 0xb1n4ry.
+Here I document engagements, missions, or anything else that interest me, often with a creative flair. 
 
-**Missions** — full writeups of completed engagements, start to finish.
-**Research** — standalone findings, technique breakdowns, tooling notes.
-**TTPs** — reference material: specific tactics, techniques, and procedures
-worth remembering.
+*Welcome to Netrunner Diaries" 
 
-Everything here comes from authorized, sanctioned environments: CTF events,
-personal lab infrastructure, or client engagements with explicit scope and
-permission. Nothing on this site documents unauthorized access.
