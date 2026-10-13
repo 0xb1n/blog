@@ -464,12 +464,11 @@ Domain Admin, full privilege set, DC01.
 ---
 
 ## Run Debrief
-
-1. **Assumed breach foothold** (`faraday`) → domain recon over SMB/LDAP/RPC
-2. **Kerberoasting** a weak service-account password (`alt.svc` → `babygirl1`)
-3. **ACL abuse #1** — `GenericAll` → password reset onto `Yorinobu`
-4. **ACL abuse #2** — `GenericWrite` → targeted Kerberoast onto `Soulkiller.svc`
-5. **AD CS ESC1** — forged a certificate as `the_emperor` (Domain Admin) via a template that allowed the requester to supply their own subject
-6. **Domain Admin** via `certipy auth` → NT hash → WinRM
-
+ 
+So here's how it actually went down, if you're keeping score.
+ 
+Walked in on `faraday`, a low priv account they handed me themselves. Kerberoasted `alt.svc` first, cracked in under a second, `babygirl1`, real original password choice there. Had `GenericAll` on `Yorinobu`, so I just reset the password myself and let myself into a shell on the DC like I owned the place. From there, `GenericWrite` onto `Soulkiller.svc`, forced an SPN onto it that didn't exist before and roasted that too. Turns out that account managed certificates, and the CA had a template sitting wide open, `AI_Takeover`, letting me name whatever subject I wanted. ESC1, no validation, no questions asked.
+ 
+Minted myself a cert as `the_emperor`. Grabbed his hash. Walked onto the DC as Saburo Arasaka himself.
+ 
 All that money, and they didn't last but minutes. Guess money really can't replace skill.
